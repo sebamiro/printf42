@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftprintf.h                                      :+:      :+:    :+:   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seba <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 11:25:58 by seba              #+#    #+#             */
-/*   Updated: 2022/08/22 19:23:09 by seba             ###   ########.fr       */
+/*   Updated: 2022/08/22 19:23:03 by seba             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTPRINTF_H
-# define LIBFTPRITNF_H
+#ifndef FT_PRINTF_H
+# define FT_PRINTF_H
 
 # include <stdio.h>
-# include "ft_printf.h"
 # include <unistd.h>
 # include <string.h>
 # include <stdarg.h>
@@ -26,7 +25,7 @@ int	ftputchar(char c);
 
 int	ftputstr(const char *s, va_list ap);
 
-int	ftputnbr(int n);
+int	ftputnbr(int n, int ident);
 
 int	ftputuint(unsigned int n);
 
@@ -36,10 +35,16 @@ int	putptr(unsigned long long ptr);
 
 int	handlechar(va_list ap);
 
-int	handlenbr(va_list ap, char c);
+int	handlenbr(va_list ap, char c, int ident);
 
-int	handlestr(va_list ap);
+int	handlestr(va_list ap, int ident);
 
 int	handleptr(va_list ap);
+
+int	identcheck(char *str);
+
+int	identprint(int ident);
+
+int ft_atoi(const char *str);
 
 #endif

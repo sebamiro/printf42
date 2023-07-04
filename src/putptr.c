@@ -12,26 +12,24 @@
 
 #include "ft_printf.h"
 
-static int	ptrlen(uintptr_t ptr)
+static int
+ptrlen(uintptr_t ptr)
 {
-	int	total;
+	int	total = 1;
 
-	total = 1;
-	while (ptr >= 16)
-	{
+	while (ptr >= 16) {
 		ptr = ptr / 16;
 		total++;
 	}
 	return (total);
 }
 
-static int	printptr(uintptr_t ptr)
+static int
+printptr(uintptr_t ptr)
 {
-	int	total;
+	int	total  = 0;
 
-	total = 0;
-	if (ptr >= 16)
-	{
+	if (ptr >= 16) {
 		total += printptr(ptr / 16);
 		total += printptr(ptr % 16);
 	}
@@ -42,11 +40,11 @@ static int	printptr(uintptr_t ptr)
 	return (total);
 }
 
-int	putptr(unsigned long long ptr)
+int
+putptr(unsigned long long ptr)
 {
-	int	total;
+	int	total  = 0;
 
-	total = 0;
 	if (ptr == 0)
 		return (write(1, "(nil)", 5));
 	total += write(1, "0x", 2);

@@ -12,13 +12,12 @@
 
 #include "ft_printf.h"
 
-int	hexlen(unsigned int n)
+int
+hexlen(unsigned int n)
 {
-	int		x;
+	int	x = 1;
 
-	x = 1;
-	while (n >= 16)
-	{
+	while (n >= 16) {
 		x++;
 		n = n / 16;
 	}
@@ -27,18 +26,14 @@ int	hexlen(unsigned int n)
 
 int	puthexnbr(unsigned int n, char x)
 {
-	char	*nums;
-	int		total;
+	char	*nums = "0123456789abcdef";
+	int		total = 0;
 
-	total = 0;
-	nums = "0123456789abcdef";
-	if (n >= 16)
-	{
+	if (n >= 16) {
 		total += puthexnbr((n / 16), x);
 		total += puthexnbr((n % 16), x);
 	}
-	else
-	{
+	else {
 		if (x == 'X' && n > 9)
 			total += ftputchar(nums[n] - 32);
 		else

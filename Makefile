@@ -3,33 +3,72 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: seba <marvin@42.fr>                        +#+  +:+       +#+         #
+#    By: smiro <smiro@student.42barcelona>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/08/17 16:37:30 by seba              #+#    #+#              #
-#    Updated: 2022/08/22 15:04:46 by seba             ###   ########.fr        #
+#    Created: 2022/11/11 15:23:29 by smiro             #+#    #+#              #
+#    Updated: 2023/04/15 20:00:59 by smiro            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	=	ft_printf.c puthexnbr.c putptr.c handletype.c putchar.c putnbr.c \
-		putstr.c
+################################################################################
 
-OBJS	= $(SRCS:.c=.o)
+MAKE		= make --no-print-directory
 
-CC	= gcc
-RM	= rm -f
-CFLAGS	= -Wall -Wextra -Werror -I.
+NAME		= libftprintf.a
+INC			= ./inc/
 
-NAME	= libftprintf.a
+SRC_DIR		= src/
+OBJ_DIR		= obj/
+DEP_DIR		= dep/
 
-all:	$(NAME)
+CFLAGS		= -I $(INC) -MMD -MP -MF $(DEP_DIR)$*.d -Wall -Werror -Wextra
+RM			= rm -rf
+CC			= gcc
+AR			= ar rcs
 
-$(NAME):	$(OBJS)
-	ar rcs $(NAME) $(OBJS)
+################################################################################
+
+SRC_LIST	:=	$(shell find $(SRC_DIR:/=) -type d)
+
+SRC			:=	$(shell find $(SRC_DIR:/=) -name '*.c')
+OBJ 		=	$(patsubst $(SRC_DIR)%, $(OBJ_DIR)%, $(SRC:.c=.o))
+DEP 		=	$(patsubst $(SRC_DIR)%, $(DEP_DIR)%, $(SRC:.c=.d))
+
+################################################################################
+
+all:
+			@$(MAKE) $(NAME)
+
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c Makefile
+			@printf "compiling.. $(notdir $<)%20c\n"
+			@$(CC) $(CFLAGS) -c $< -o $@
+
+$(NAME)::	$(OBJ_DIR) $(DEP_DIR) $(OBJ)
+			@$(AR) $(NAME) $(OBJ)
+			@printf "$(basename $@): done%20c\n"
+
+$(OBJ_DIR):
+			@mkdir $(patsubst $(SRC_DIR:/=)%, $(@:/=)%, $(SRC_LIST))
+			@echo "creating.. $@"
+
+$(DEP_DIR):
+			@mkdir $(patsubst $(SRC_DIR:/=)%, $(@:/=)%, $(SRC_LIST))
+			@echo "creating.. $@"
 
 clean:
-	$(RM) $(NAME) $(OBJS)
+			@$(RM) $(OBJ_DIR) $(DEP_DIR)
+			@$(RM) $(NAME)
+			@echo "removing.. $(OBJ_DIR)"
+			@echo "removing.. $(DEP_DIR)"
 
-fclean:	clean
-	$(RM) $(NAME)
+fclean:
+			@$(MAKE) clean
+			@$(RM) $(NAME)
+			@echo "removing.. $(NAME)"
 
-re:	fclean $(NAME)
+re:
+			@$(MAKE) fclean
+			@$(MAKE)
+
+.PHONY: all clean fclean re
+-include $(DEP)

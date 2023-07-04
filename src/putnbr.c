@@ -12,70 +12,67 @@
 
 #include "ft_printf.h"
 
-static	int	unlen(unsigned int n)
+static int
+unlen(unsigned int n)
 {
-	int	total;
+	int	total = 1;
 
-	total = 1;
-	while (n > 9)
-	{
+	while (n > 9) {
 		total++;
 		n = n / 10;
 	}
 	return (total);
 }
 
-static int	nlen(int n)
-{
-	int	total;
+static int
+nlen(int n) {
+	int	total = 1;
 
-	total = 1;
-	if (n < 0)
-	{
+	if (n < 0) {
 		total++;
 		n = -n;
 	}
-	while (n > 9)
-	{
+	while (n > 9) {
 		total++;
 		n = n / 10;
 	}
 	return (total);
 }
 
-int	ftputnbr(int n)
+int
+ftputnbr(int n, int ident)
 {
-	int	total;
+	int	total = 0;
 
-	total = 0;
 	if (n == -2147483648)
 		return (write(1, "-2147483648", 11));
-	else if (n < 0)
-	{
+	if (ident && ident > 0)
+		identprint(ident - nlen(n));
+	if (n < 0) {
 		total += ftputchar('-');
-		total += ftputnbr(-n);
+		n = -n;
 	}
-	else if (n > 9)
-	{
-		total += ftputnbr(n / 10);
-		total += ftputnbr(n % 10);
+	if (n > 9) {
+		total += ftputnbr(n / 10, 0);
+		total += ftputnbr(n % 10, 0);
 	}
 	else
 		return (ftputchar(n + '0'));
+	if (ident && ident < 0)
+		identprint(ident * -1 - nlen(n));
 	if (total != nlen(n))
 		return (-1);
 	return (total);
 }
 
-int	ftputuint(unsigned int n)
+int
+ftputuint(unsigned int n)
 {
-	int	total;
+	int	total = 0;
 
-	total = 0;
-	if (n > 9)
-	{
-		total += ftputnbr(n / 10);
-		total += ftputnbr(n % 10);
+	if (n > 9) {
+		total += ftputnbr(n / 10, 0);
+		total += ftputnbr(n % 10, 0);
 	}
 	else
 		return (ftputchar(n + '0'));
